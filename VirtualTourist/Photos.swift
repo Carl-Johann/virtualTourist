@@ -7,11 +7,26 @@
 //
 
 import Foundation
-import MapKit
+import CoreData
 
-struct FlickrPinPhotos {
+
+
+class FlickrPinPhotos: Photos {
     
-    var title: String? = ""
+    convenience init ( photoURL: String = "", context: NSManagedObjectContext ) {
+        
+        guard let ent = NSEntityDescription.entity(forEntityName: "Photos", in: context) else {
+            print("ERROR. FlickrPin, 18. No NSEntityDescription matching 'Photos'")
+            return
+        }
+        
+        self.init(entity: ent, insertInto: context)
+        self.photoURL = photoURL
+        
+    }
+    
+}
+/*  var title: String? = ""
     var height: Int? = 0
     var width: Int? = 0
     var url: String? = ""
@@ -32,4 +47,4 @@ struct FlickrPinPhotos {
         
         return PinData
     }
-}
+}*/

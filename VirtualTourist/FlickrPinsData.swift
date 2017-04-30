@@ -11,7 +11,7 @@ import Foundation
 
 class FlickrPinsData {
     
-    var students: [FlickrPinPhotos] = [FlickrPinPhotos]()
+    //var students: [FlickrPinPhotos] = [FlickrPinPhotos]()
     
     static let sharedInstance = FlickrPinsData()
     
