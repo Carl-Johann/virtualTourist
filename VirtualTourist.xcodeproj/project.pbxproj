@@ -57,7 +57,6 @@
 			isa = PBXGroup;
 			children = (
 				23BA52681EB11ED400CC849B /* VirtualTourist */,
-				23BA52671EB11ED400CC849B /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -67,18 +66,19 @@
 				23BA52661EB11ED400CC849B /* VirtualTourist.app */,
 			);
 			name = Products;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		23BA52681EB11ED400CC849B /* VirtualTourist */ = {
 			isa = PBXGroup;
 			children = (
-				23BA52691EB11ED400CC849B /* AppDelegate.swift */,
-				23BA528F1EB63B4400CC849B /* CoreDataStack.swift */,
 				23BA52701EB11ED400CC849B /* VirtualTourist.xcdatamodeld */,
+				23BA52691EB11ED400CC849B /* AppDelegate.swift */,
 				23BA526B1EB11ED400CC849B /* ViewController.swift */,
 				23BA52831EB23D0C00CC849B /* Clients */,
 				23BA52911EB66BAA00CC849B /* Models */,
 				23BA52821EB1234D00CC849B /* Controllers */,
+				23BA52671EB11ED400CC849B /* Products */,
 				23BA526D1EB11ED400CC849B /* Main.storyboard */,
 				23BA52731EB11ED400CC849B /* Assets.xcassets */,
 				23BA52751EB11ED400CC849B /* LaunchScreen.storyboard */,
@@ -117,6 +117,7 @@
 		23BA52911EB66BAA00CC849B /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				23BA528F1EB63B4400CC849B /* CoreDataStack.swift */,
 				23BA52891EB61A1B00CC849B /* Photos.swift */,
 				23BA52921EB66BCD00CC849B /* Pin.swift */,
 			);

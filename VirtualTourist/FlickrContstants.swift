@@ -40,7 +40,10 @@ extension FlickrClient {
         static let DisableJSONCallback = "1"
         static let EnableJSONCallBack = "0"
         static let URLMedium = "url_m"
-        static let NumberOfPhotosPerPage = "100"
+        static let URLSmall = "url_s"
+        static let DateTaken = "date_taken"
+        static let DateTakenAndUrlSmall = "url_s,date_taken"
+        static let NumberOfPhotosPerPage = "25"
     }
     
 }

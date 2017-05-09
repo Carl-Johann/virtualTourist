@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="3kK-B2-BFP">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="3kK-B2-BFP">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -73,6 +73,7 @@
                     <connections>
                         <outlet property="mapView" destination="84d-UX-sVK" id="4ZA-Ym-dZO"/>
                         <outlet property="pinGestureRecognizer" destination="jup-nr-RWz" id="A1N-QY-YZe"/>
+                        <segue destination="2Y7-UZ-iuP" kind="show" identifier="ClickedPinSegue" id="LX2-kE-UkV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -83,6 +84,34 @@
                 </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="848.79999999999995" y="123.68815592203899"/>
+        </scene>
+        <!--Pin View Controller-->
+        <scene sceneID="lZk-Mo-Nx6">
+            <objects>
+                <tableViewController id="2Y7-UZ-iuP" customClass="PinViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="Xas-aJ-4Xq">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="PinCell" id="r9W-SE-fy8">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="r9W-SE-fy8" id="t8W-OE-IQ1">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="2Y7-UZ-iuP" id="Abd-ox-ehg"/>
+                            <outlet property="delegate" destination="2Y7-UZ-iuP" id="382-zc-lZZ"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7Dl-xx-xXi" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1894" y="504"/>
         </scene>
         <!--Pin Image View Controller-->
         <scene sceneID="LRJ-cu-qgL">
@@ -127,7 +156,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Cr-3j-vdc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1584.8" y="123.68815592203899"/>
+            <point key="canvasLocation" x="1879" y="-228"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="sx7-2M-Y92">

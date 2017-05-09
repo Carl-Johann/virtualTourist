@@ -11,19 +11,17 @@ import CoreData
 
 class MapPin: Pin {
     
-    convenience init( latitude: Double, longitude: Double, context: NSManagedObjectContext ) {
-        
-        guard let ent = NSEntityDescription.entity(forEntityName: "Pin", in: context) else {
-            print("ERROR. Pin.swift. Couldn't find a NSEntityDescription matching 'Pin'")
-            return
+    convenience init ( latitude: Double, longitude: Double, context: NSManagedObjectContext ) {
+        if let ent = NSEntityDescription.entity(forEntityName: "Pin", in: context) {
+            self.init(entity: ent, insertInto: context)
+            self.latitude = latitude
+            self.longitude = longitude
+            
+        } else {
+            fatalError("ERROR. Pin. No NSEntityDescription matching 'Pin'")
         }
-        
-        self.init(entity: ent, insertInto: context)
-
-        self.latitude = latitude
-        self.longitude = longitude
-        
-
     }
-
+    
+    
+    
 }
