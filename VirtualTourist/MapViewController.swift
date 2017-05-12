@@ -15,16 +15,42 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet var pinGestureRecognizer: UILongPressGestureRecognizer!
     
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     var annotations: [MKAnnotation] = [MKAnnotation]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    }
+        
+        /*var fetchedResultsController : NSFetchedResultsController<NSFetchRequestResult>?{
+         didSet { fetchedResultsController?.delegate = self as? NSFetchedResultsControllerDelegate }
+         }*/
+        
+        DispatchQueue.main.async {
+            
+            
+            
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Pin")
+            fetchRequest.sortDescriptors = [ NSSortDescriptor(key: "latitude", ascending: true) ]
+            
+            let context = self.appDelegate.stack.context
+            let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+            
+            do {
+                try fetchedResultsController.performFetch()
+            } catch {
+                print("Failed to initialize FetchedResultsController: \(error)")
+            }
+            
+            for pin as Pin in fetchedResultsController.fetchedObjects! {
+                print("XXXXXXXXXXX: \(pin)")
+            }
+            //pinTableVC.fetchedResultsController = fetchedResultsController
+            
+        }}
     
     
     
     @IBAction func editButtonAction(_ sender: Any) {
-        print("Clicked 'editButtonAction'")
         self.performSegue(withIdentifier: "ClickedPinSegue", sender: self)
     }
     
@@ -42,16 +68,35 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let latitude = coordinateFromTouch.latitude as Double
         let longitude = coordinateFromTouch.longitude as Double
         
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = coordinateFromTouch
-                
-        self.mapView.addAnnotation(annotation)
+        
+        
+        
         if self.pinGestureRecognizer.state == .ended {
+            let newPin = Pin(context: appDelegate.stack.context)
+            let annotation = MKPointAnnotation()
+            
+            annotation.coordinate = coordinateFromTouch
+            self.mapView.addAnnotation(annotation)
             
             DispatchQueue.main.async {
-                FlickrClient.sharedInstance.getImagesForPin(latitude, longitude){ (succes) in
+                FlickrClient.sharedInstance.getImagesForPin(latitude, longitude){ (photos, success) in
+                    if success != true { print("An error occured trying to download images for the created pin"); return }
                     
+                    
+                    
+                    newPin.latitude = latitude
+                    newPin.longitude = longitude
+                    
+                    for photo in photos {
+                        guard let dateTaken = photo["datetaken"] as? String else { print("ERROR: FlickrClient. Couldn't find 'datetaken' in 'photos'"); return }
+                        guard let photoURL = photo["url_s"] as? String else { print("ERROR: FlickrClient. Couldn't find 'url_s' in 'photos'"); return }
+                        
+                        print("Date Taken: \(dateTaken)")
+                        print("Photo URL: \(photoURL)")
+                        print("-------------------------")
+                    }
                 }
+                
             }
             
         }
@@ -61,48 +106,22 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         if segue.identifier! == "ClickedPinSegue" {
             
             if let pinTableVC = segue.destination as? PinViewController {
-                let fr = NSFetchRequest<NSFetchRequestResult>(entityName: "Pin")
-                fr.sortDescriptors = [ NSSortDescriptor(key: "latitude", ascending: false) ]
+                let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Pin")
+                fetchRequest.sortDescriptors = [ NSSortDescriptor(key: "latitude", ascending: true) ]
                 
                 
-                //let indexPath = tableView.indexPathForSelectedRow!
-                //fetchedResultsController?.object(at: indexPath)
-                //let pin = fetchedResultsController?.object(at: indexPath) as? MapPin
+                let context = appDelegate.stack.context
+                
+                let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
                 
                 
-                let predicate = NSPredicate(format: "pin = %@", argumentArray: [pin!])
-                fr.predicate = predicate
+                pinTableVC.fetchedResultsController = fetchedResultsController
                 
-                
-                let frc = NSFetchedResultsController(fetchRequest: fr, managedObjectContext:pinTableVC.fetchedResultsController!.managedObjectContext, sectionNameKeyPath: "longitude", cacheName: nil)
-                pinTableVC.fetchedResultsController = frc
-                
-                //PinViewController.
-                // So far we have a search that will match ALL notes. However, we're
-                // only interested in those within the current notebook:
-                // NSPredicate to the rescue!
-                /* let indexPath = tableView.indexPathForSelectedRow!
-                 fetchedResultsController?.object(at: <#T##IndexPath#>)
-                 let notebook = fetchedResultsController?.object(at: indexPath) as? Notebook
-                 
-                 
-                 let pred = NSPredicate(format: "notebook = %@", argumentArray: [notebook!])
-                 
-                 fr.predicate = pred
-                 
-                 // Create FetchedResultsController
-                 let fc = NSFetchedResultsController(fetchRequest: fr, managedObjectContext:fetchedResultsController!.managedObjectContext, sectionNameKeyPath: "humanReadableAge", cacheName: nil)
-                 
-                 // Inject it into the notesVC
-                 notesVC.fetchedResultsController = fc
-                 
-                 // Inject the notebook too!
-                 notesVC.notebook = notebook*/
             }
         }
         
     }
-
+    
     
     
     

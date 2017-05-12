@@ -85,10 +85,10 @@
             </objects>
             <point key="canvasLocation" x="848.79999999999995" y="123.68815592203899"/>
         </scene>
-        <!--Pin View Controller-->
+        <!--Pins-->
         <scene sceneID="lZk-Mo-Nx6">
             <objects>
-                <tableViewController id="2Y7-UZ-iuP" customClass="PinViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="Pins" id="2Y7-UZ-iuP" customClass="PinViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="Xas-aJ-4Xq">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -108,10 +108,41 @@
                             <outlet property="delegate" destination="2Y7-UZ-iuP" id="382-zc-lZZ"/>
                         </connections>
                     </tableView>
+                    <connections>
+                        <segue destination="APk-cf-Chc" kind="show" identifier="displayNoteSegue" id="MVr-SR-v8Q"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7Dl-xx-xXi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1894" y="504"/>
+        </scene>
+        <!--Photos-->
+        <scene sceneID="Zeo-vw-daQ">
+            <objects>
+                <tableViewController title="Photos" id="APk-cf-Chc" customClass="PhotosViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="uBB-o1-Hb8">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="PhotoCell" id="VSH-Zy-gUb">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VSH-Zy-gUb" id="cSS-pe-3g6">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="APk-cf-Chc" id="9Sz-qh-HCL"/>
+                            <outlet property="delegate" destination="APk-cf-Chc" id="Vd9-DS-T5K"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1LT-EW-p5h" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2662" y="503"/>
         </scene>
         <!--Pin Image View Controller-->
         <scene sceneID="LRJ-cu-qgL">

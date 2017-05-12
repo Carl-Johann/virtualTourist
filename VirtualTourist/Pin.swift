@@ -22,6 +22,4 @@ class MapPin: Pin {
         }
     }
     
-    
-    
 }
