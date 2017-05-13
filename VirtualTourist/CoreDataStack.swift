@@ -91,27 +91,8 @@ extension CoreDataStack {
     func saveContext() throws {
         print("Looking for changes to save")
         if context.hasChanges {
-            try context.save(); print("saved changes")
+            try context.save(); print("Changes were saved")
         }
-        print("ok")
     }
     
-    /*func autoSave(_ delayInSeconds : Int) {
-        
-        if delayInSeconds > 0 {
-            do {
-                try saveContext()
-                print("Autosaving")
-            } catch {
-                print("Error while autosaving")
-            }
-            
-            let delayInNanoSeconds = UInt64(delayInSeconds) * NSEC_PER_SEC
-            let time = DispatchTime.now() + Double(Int64(delayInNanoSeconds)) / Double(NSEC_PER_SEC)
-            
-            DispatchQueue.main.asyncAfter(deadline: time) {
-                self.autoSave(delayInSeconds)
-            }
-        }
-    }*/
 }

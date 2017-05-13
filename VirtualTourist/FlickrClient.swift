@@ -72,9 +72,7 @@ struct FlickrClient {
             components.queryItems!.append(queryItem)
             
         }
-        print("Request URL: \(components.url!)")
-        print()
-        print()
+        
         return components.url!
     }
     

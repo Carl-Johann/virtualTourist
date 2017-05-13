@@ -11,7 +11,7 @@ import CoreData
 
 class PinViewController: UITableViewController {
     
-    var fetchedResultsController : NSFetchedResultsController<NSFetchRequestResult>?{
+    var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?{
         didSet { fetchedResultsController?.delegate = self as? NSFetchedResultsControllerDelegate }
     }
     
@@ -56,7 +56,6 @@ class PinViewController: UITableViewController {
             print("No sections in fetchedResultsController")
             return 0
         }
-        print("Number of objects in frc section: \(fc.sections![section].numberOfObjects)")
         return fc.sections![section].numberOfObjects
     }
     
@@ -64,12 +63,10 @@ class PinViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        guard let pin = self.fetchedResultsController?.object(at: indexPath) as? Pin else {
+        /*guard let pin = self.fetchedResultsController?.object(at: indexPath) as? Pin else {
             print("Attempt to configure cell without a managed object")
             return
-        }
-        
-        print("\(pin.latitude) er noget lort")
+        }*/
         
         performSegue(withIdentifier: "displayNoteSegue", sender: self)
     }
@@ -95,6 +92,7 @@ class PinViewController: UITableViewController {
                 //let frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: delegate.stack.context, sectionNameKeyPath: nil, cacheName: nil)
                 
                 //photoTableVC.fetchedResultsController = frc
+                
                 photoTableVC.pin = pin
                 
             }

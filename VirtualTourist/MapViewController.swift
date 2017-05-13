@@ -16,18 +16,13 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet var pinGestureRecognizer: UILongPressGestureRecognizer!
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    var annotations: [MKAnnotation] = [MKAnnotation]()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        /*var fetchedResultsController : NSFetchedResultsController<NSFetchRequestResult>?{
-         didSet { fetchedResultsController?.delegate = self as? NSFetchedResultsControllerDelegate }
-         }*/
-        
+    var annotations: [MKAnnotation] = [MKAnnotation]()
+    var selectedAnnotation: MKAnnotation?
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
         DispatchQueue.main.async {
-            
-            
             
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Pin")
             fetchRequest.sortDescriptors = [ NSSortDescriptor(key: "latitude", ascending: true) ]
@@ -41,12 +36,33 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 print("Failed to initialize FetchedResultsController: \(error)")
             }
             
-            for pin as Pin in fetchedResultsController.fetchedObjects! {
-                print("XXXXXXXXXXX: \(pin)")
+            for pin in fetchedResultsController.fetchedObjects! as! [Pin] {
+                //print("XXXXXXXXXXX: \(pin.latitude)")
+                
+                let annotationFromCoreData = MKPointAnnotation()
+                let annotationCoordinate = CLLocationCoordinate2D( latitude: pin.latitude, longitude: pin.longitude )
+                annotationFromCoreData.coordinate = annotationCoordinate
+                
+                self.annotations.append(annotationFromCoreData)
+                
             }
             //pinTableVC.fetchedResultsController = fetchedResultsController
             
-        }}
+            self.mapView.addAnnotations(self.annotations)
+        }
+        
+    }
+    
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        /*var fetchedResultsController : NSFetchedResultsController<NSFetchRequestResult>?{
+         didSet { fetchedResultsController?.delegate = self as? NSFetchedResultsControllerDelegate }
+         }*/
+        
+    }
     
     
     
@@ -55,79 +71,162 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     @IBAction func pinGesureRecognizer(_ sender: Any) {
-        
-        let xValue = pinGestureRecognizer.location(in: self.mapView).x
-        let yValue = pinGestureRecognizer.location(in: self.mapView).y
-        
-        print("--------")
-        let mapPoint = CGPoint(x: xValue,y:  yValue)
-        
-        let coordinateFromTouch = self.mapView.convert(mapPoint, toCoordinateFrom: self.mapView)
-        print(coordinateFromTouch)
-        
-        let latitude = coordinateFromTouch.latitude as Double
-        let longitude = coordinateFromTouch.longitude as Double
-        
-        
-        
-        
         if self.pinGestureRecognizer.state == .ended {
+            
+            
             let newPin = Pin(context: appDelegate.stack.context)
             let annotation = MKPointAnnotation()
             
+            
+            let xValue = pinGestureRecognizer.location(in: self.mapView).x
+            let yValue = pinGestureRecognizer.location(in: self.mapView).y
+            
+            
+            let mapPoint = CGPoint(x: xValue,y:  yValue)
+            let coordinateFromTouch = self.mapView.convert(mapPoint, toCoordinateFrom: self.mapView)
+            
+            
             annotation.coordinate = coordinateFromTouch
+            self.annotations.append(annotation)
+            
+            
+            let latitude = coordinateFromTouch.latitude as Double
+            let longitude = coordinateFromTouch.longitude as Double
+            
+            
             self.mapView.addAnnotation(annotation)
             
+            
+            
             DispatchQueue.main.async {
+                
+                
                 FlickrClient.sharedInstance.getImagesForPin(latitude, longitude){ (photos, success) in
                     if success != true { print("An error occured trying to download images for the created pin"); return }
                     
+                    print()
+                    print()
+                    print("Did get images for pin. API method call was successfull")
+                    print()
+                    print()
                     
                     
                     newPin.latitude = latitude
                     newPin.longitude = longitude
                     
+                    
                     for photo in photos {
-                        guard let dateTaken = photo["datetaken"] as? String else { print("ERROR: FlickrClient. Couldn't find 'datetaken' in 'photos'"); return }
-                        guard let photoURL = photo["url_s"] as? String else { print("ERROR: FlickrClient. Couldn't find 'url_s' in 'photos'"); return }
+                        let pinPhoto = Photos(context: self.appDelegate.stack.context)
                         
-                        print("Date Taken: \(dateTaken)")
-                        print("Photo URL: \(photoURL)")
-                        print("-------------------------")
+                        //self.mapView.userLocation.
+                        
+                        guard let dateTaken = photo["datetaken"] as? String else { print("ERROR: MapViewController. Couldn't find 'datetaken' in 'photos'"); return }
+                        guard let photoURL = photo["url_s"] as? String else { print("ERROR: MapViewController. Couldn't find 'url_s' in 'photos'"); return }
+                        
+                        let dateFormatter = DateFormatter()
+                        
+                        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                        let date = dateFormatter.date(from: dateTaken)
+                        
+                        print("--------------")
+                        print(dateTaken)
+                        print(date!)
+                        
+                        pinPhoto.photoURL = photoURL
+                        //pinPhoto.dateTaken = date! as NSDate
+                        
+                        pinPhoto.pin = newPin
+                        newPin.addToPhotos(pinPhoto)
+                        
                     }
+                    
+                    
+                    do {
+                        try self.appDelegate.stack.saveContext()
+                    } catch { print("An error occured trying to save core data, after adding a pin ") }
+                    
+                    
                 }
-                
             }
-            
         }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Pin")
+        fetchRequest.sortDescriptors = [ NSSortDescriptor(key: "latitude", ascending: true) ]
+        
+        let context = appDelegate.stack.context
+        
+        let fetchedResultsControllerr = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+        
         if segue.identifier! == "ClickedPinSegue" {
             
             if let pinTableVC = segue.destination as? PinViewController {
-                let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Pin")
-                fetchRequest.sortDescriptors = [ NSSortDescriptor(key: "latitude", ascending: true) ]
-                
-                
-                let context = appDelegate.stack.context
-                
-                let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-                
-                
-                pinTableVC.fetchedResultsController = fetchedResultsController
-                
+                pinTableVC.fetchedResultsController = fetchedResultsControllerr
             }
+            
         }
+        
+        if segue.identifier == "ClickedPinSegueToCell" {
+            guard let pinCellVC = segue.destination as? PinImageCellViewController else {
+                print("Couldn't convert 'segue.destination' to type 'PinImageCellViewController'")
+                return
+            }
+            
+            guard let annotation = selectedAnnotation else { print("'selectedAnnotation = nil'"); return }
+            
+            let latitude = annotation.coordinate.latitude
+            let longitude = annotation.coordinate.longitude
+            
+            let pred = NSPredicate(format: "latitude = %@ AND longitude = %@", argumentArray: [latitude, longitude])
+            fetchRequest.predicate = pred
+            
+            let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+            
+            pinCellVC.fetchedResultsController = fetchedResultsController
+            
+            //let pred = NSPredicate(format: "Pin = %@", argumentArray: [pin!])
+            /*if let photoTableVC = segue.destination as? PhotosViewController {
+             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Pin")
+             fetchRequest.sortDescriptors = [ NSSortDescriptor(key: "latitude", ascending: true) ]
+             
+             
+             let indexPath = tableView.indexPathForSelectedRow!
+             let pin = fetchedResultsController?.object(at: indexPath) as? Pin
+             
+             
+             
+             //fetchRequest.predicate = pred
+             
+             // Create FetchedResultsController
+             //let frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: delegate.stack.context, sectionNameKeyPath: nil, cacheName: nil)
+             
+             //photoTableVC.fetchedResultsController = frc
+             
+             photoTableVC.pin = pin
+             
+             }
+             }
+             */
+            
+            
+        }
+        
+        
         
     }
     
     
     
     
-    //func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        self.selectedAnnotation = view.annotation
+        
+        performSegue(withIdentifier: "ClickedPinSegueToCell", sender: self)
+        
+    }
     
-    //}
+    
     
     
 }

@@ -74,7 +74,6 @@ class PhotosViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("jaer")
     }
     
 }
