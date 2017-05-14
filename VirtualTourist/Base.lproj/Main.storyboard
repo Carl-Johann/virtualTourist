@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -158,14 +157,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Duf-rK-hgn">
-                                <rect key="frame" x="0.0" y="44" width="375" height="182"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="182" id="x34-ry-UnU"/>
-                                </constraints>
-                            </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="aOC-Wo-Bco">
-                                <rect key="frame" x="0.0" y="226" width="375" height="441"/>
+                                <rect key="frame" x="1" y="220" width="373" height="446"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="FWs-9S-2L8">
                                     <size key="itemSize" width="50" height="50"/>
@@ -174,33 +167,55 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PinPhotoCell" id="OFV-0D-pAa">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PinPhotoCell" id="OFV-0D-pAa" customClass="autistcelle" customModule="VirtualTourist" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="z0b-Jc-WNS">
+                                                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                                </imageView>
+                                            </subviews>
                                         </view>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="z0b-Jc-WNS" secondAttribute="bottom" id="5tv-Y4-eCy"/>
+                                            <constraint firstItem="z0b-Jc-WNS" firstAttribute="leading" secondItem="OFV-0D-pAa" secondAttribute="leading" id="Bd4-7p-vVo"/>
+                                            <constraint firstAttribute="trailing" secondItem="z0b-Jc-WNS" secondAttribute="trailing" id="coH-zd-ixG"/>
+                                            <constraint firstItem="z0b-Jc-WNS" firstAttribute="top" secondItem="OFV-0D-pAa" secondAttribute="top" id="vke-CY-FVh"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="cellImage" destination="z0b-Jc-WNS" id="zRQ-RH-eU2"/>
+                                        </connections>
                                     </collectionViewCell>
                                 </cells>
                                 <connections>
                                     <outlet property="dataSource" destination="Qx7-gC-rHT" id="VBo-80-GdQ"/>
                                     <outlet property="delegate" destination="Qx7-gC-rHT" id="wY7-X7-3yJ"/>
-                                    <outlet property="prefetchDataSource" destination="Qx7-gC-rHT" id="MnK-qb-0DZ"/>
                                 </connections>
                             </collectionView>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Duf-rK-hgn">
+                                <rect key="frame" x="0.0" y="37" width="375" height="182"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="182" id="x34-ry-UnU"/>
+                                </constraints>
+                            </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="DL3-Of-g0Y" firstAttribute="top" secondItem="aOC-Wo-Bco" secondAttribute="bottom" id="NVF-uK-14d"/>
-                            <constraint firstItem="aOC-Wo-Bco" firstAttribute="leading" secondItem="h2d-o2-SN3" secondAttribute="leading" id="Qov-qe-qNO"/>
-                            <constraint firstAttribute="trailing" secondItem="aOC-Wo-Bco" secondAttribute="trailing" id="ZUA-wZ-D6T"/>
-                            <constraint firstItem="Duf-rK-hgn" firstAttribute="top" secondItem="h2d-o2-SN3" secondAttribute="topMargin" constant="44" id="dy9-Hw-MLZ"/>
-                            <constraint firstItem="Duf-rK-hgn" firstAttribute="leading" secondItem="aOC-Wo-Bco" secondAttribute="leading" id="ml9-mF-ChS"/>
-                            <constraint firstItem="Duf-rK-hgn" firstAttribute="trailing" secondItem="aOC-Wo-Bco" secondAttribute="trailing" id="mpf-7G-FoR"/>
-                            <constraint firstItem="aOC-Wo-Bco" firstAttribute="top" secondItem="Duf-rK-hgn" secondAttribute="bottom" id="tIJ-bb-zsb"/>
+                            <constraint firstAttribute="trailing" secondItem="aOC-Wo-Bco" secondAttribute="trailing" constant="1" id="Cio-hw-utT"/>
+                            <constraint firstAttribute="trailing" secondItem="Duf-rK-hgn" secondAttribute="trailing" id="DZJ-uu-DN2"/>
+                            <constraint firstItem="DL3-Of-g0Y" firstAttribute="top" secondItem="aOC-Wo-Bco" secondAttribute="bottom" constant="1" id="JID-WA-JyF"/>
+                            <constraint firstItem="aOC-Wo-Bco" firstAttribute="top" secondItem="Duf-rK-hgn" secondAttribute="bottom" constant="1" id="PcC-LR-ba3"/>
+                            <constraint firstItem="aOC-Wo-Bco" firstAttribute="leading" secondItem="h2d-o2-SN3" secondAttribute="leading" constant="1" id="nOO-Fr-wxH"/>
+                            <constraint firstItem="Duf-rK-hgn" firstAttribute="leading" secondItem="h2d-o2-SN3" secondAttribute="leading" id="yVu-3z-Irv"/>
+                            <constraint firstItem="Duf-rK-hgn" firstAttribute="top" secondItem="h2d-o2-SN3" secondAttribute="top" constant="37" id="yzO-jk-JbT"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="photosCollectionView" destination="aOC-Wo-Bco" id="rVu-H7-sH5"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Cr-3j-vdc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

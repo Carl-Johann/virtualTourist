@@ -139,7 +139,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                         newPin.addToPhotos(pinPhoto)
                         
                     }
-                    
+                    print("newPin: \(newPin.photos)")
                     
                     do {
                         try self.appDelegate.stack.saveContext()
@@ -157,12 +157,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         let context = appDelegate.stack.context
         
-        let fetchedResultsControllerr = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
         
         if segue.identifier! == "ClickedPinSegue" {
             
             if let pinTableVC = segue.destination as? PinViewController {
-                pinTableVC.fetchedResultsController = fetchedResultsControllerr
+                pinTableVC.fetchedResultsController = fetchedResultsController
             }
             
         }
@@ -180,36 +180,26 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             
             let pred = NSPredicate(format: "latitude = %@ AND longitude = %@", argumentArray: [latitude, longitude])
             fetchRequest.predicate = pred
+            fetchRequest.fetchLimit = 1
+
             
-            let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-            
-            pinCellVC.fetchedResultsController = fetchedResultsController
-            
-            //let pred = NSPredicate(format: "Pin = %@", argumentArray: [pin!])
-            /*if let photoTableVC = segue.destination as? PhotosViewController {
-             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Pin")
-             fetchRequest.sortDescriptors = [ NSSortDescriptor(key: "latitude", ascending: true) ]
-             
-             
-             let indexPath = tableView.indexPathForSelectedRow!
-             let pin = fetchedResultsController?.object(at: indexPath) as? Pin
-             
-             
-             
-             //fetchRequest.predicate = pred
-             
-             // Create FetchedResultsController
-             //let frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: delegate.stack.context, sectionNameKeyPath: nil, cacheName: nil)
-             
-             //photoTableVC.fetchedResultsController = frc
-             
-             photoTableVC.pin = pin
-             
-             }
-             }
-             */
+            do {
+                try fetchedResultsController.performFetch()
+            } catch {
+                print("Failed to initialize FetchedResultsController: \(error)")
+            }
             
             
+            
+            guard let pinFromAnnotation = fetchedResultsController.fetchedObjects?.first as? Pin else {
+                print("no pin found from latitude and/or longitude from clicked annotation")
+                return
+            }
+            
+            guard let photosFromPin = pinFromAnnotation.photos as? Set<Photos> else { print("no photos found from 'pinFromAnnotation'"); return }
+            
+            pinCellVC.photosFromPin = photosFromPin
+           
         }
         
         
