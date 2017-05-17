@@ -30,7 +30,13 @@
                                     </navigationItem>
                                 </items>
                             </navigationBar>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ckR-oS-8oz">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="84d-UX-sVK">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="0Hr-e6-oLz"/>
+                                </connections>
+                            </mapView>
+                            <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ckR-oS-8oz">
                                 <rect key="frame" x="0.0" y="603" width="375" height="64"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="0.0" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -44,12 +50,6 @@
                                 </attributedString>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="84d-UX-sVK">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <connections>
-                                    <outlet property="delegate" destination="BYZ-38-t0r" id="0Hr-e6-oLz"/>
-                                </connections>
-                            </mapView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
@@ -64,15 +64,17 @@
                         </connections>
                     </view>
                     <navigationItem key="navigationItem" title="Virtual Tourist" id="KSB-uD-3E3">
-                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="4un-dB-Ybt">
+                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="BcM-NY-hAm">
                             <connections>
-                                <action selector="editButtonAction:" destination="BYZ-38-t0r" id="GrG-4U-7Fr"/>
+                                <action selector="editDoneButton:" destination="BYZ-38-t0r" id="rVE-Yh-dWG"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="editDoneButton" destination="BcM-NY-hAm" id="y8u-x5-wTo"/>
                         <outlet property="mapView" destination="84d-UX-sVK" id="4ZA-Ym-dZO"/>
                         <outlet property="pinGestureRecognizer" destination="jup-nr-RWz" id="A1N-QY-YZe"/>
+                        <outlet property="tapToDeleteLabel" destination="ckR-oS-8oz" id="THD-tB-Q4V"/>
                         <segue destination="2Y7-UZ-iuP" kind="show" identifier="ClickedPinSegue" id="LX2-kE-UkV"/>
                         <segue destination="Qx7-gC-rHT" kind="show" identifier="ClickedPinSegueToCell" id="Jbl-NN-bbU"/>
                     </connections>
@@ -148,7 +150,7 @@
         <!--Pin Image Cell View Controller-->
         <scene sceneID="LRJ-cu-qgL">
             <objects>
-                <viewController id="Qx7-gC-rHT" customClass="PinImageCellViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="Qx7-gC-rHT" customClass="PinImageCellViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="FMS-l4-X0h"/>
                         <viewControllerLayoutGuide type="bottom" id="DL3-Of-g0Y"/>
@@ -157,26 +159,39 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <mapView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" mapType="standard" zoomEnabled="NO" scrollEnabled="NO" rotateEnabled="NO" pitchEnabled="NO" showsBuildings="NO" showsCompass="NO" showsPointsOfInterest="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Duf-rK-hgn">
+                                <rect key="frame" x="0.0" y="37" width="375" height="182"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="182" id="x34-ry-UnU"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="delegate" destination="Qx7-gC-rHT" id="Esx-QP-mFs"/>
+                                </connections>
+                            </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="aOC-Wo-Bco">
-                                <rect key="frame" x="1" y="220" width="373" height="446"/>
+                                <rect key="frame" x="0.0" y="219" width="375" height="448"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="FWs-9S-2L8">
-                                    <size key="itemSize" width="50" height="50"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="FWs-9S-2L8">
+                                    <size key="itemSize" width="100" height="100"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PinPhotoCell" id="OFV-0D-pAa" customClass="autistcelle" customModule="VirtualTourist" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PinPhotoCell" id="OFV-0D-pAa" customClass="PhotoCell" customModule="VirtualTourist" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="z0b-Jc-WNS">
-                                                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                                 </imageView>
+                                                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="wpA-gp-TSv">
+                                                    <rect key="frame" x="40" y="40" width="20" height="20"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </activityIndicatorView>
                                             </subviews>
                                         </view>
                                         <constraints>
@@ -187,6 +202,7 @@
                                         </constraints>
                                         <connections>
                                             <outlet property="cellImage" destination="z0b-Jc-WNS" id="zRQ-RH-eU2"/>
+                                            <outlet property="cellLoadingIndicator" destination="wpA-gp-TSv" id="uyn-qT-wgg"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -195,25 +211,34 @@
                                     <outlet property="delegate" destination="Qx7-gC-rHT" id="wY7-X7-3yJ"/>
                                 </connections>
                             </collectionView>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Duf-rK-hgn">
-                                <rect key="frame" x="0.0" y="37" width="375" height="182"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="182" id="x34-ry-UnU"/>
-                                </constraints>
-                            </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Huf-V4-phV">
+                                <rect key="frame" x="0.0" y="632" width="375" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" title="New Collection"/>
+                                <connections>
+                                    <action selector="newCollectionButtonAction:" destination="Qx7-gC-rHT" eventType="touchUpInside" id="gfZ-9S-Yck"/>
+                                </connections>
+                            </button>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="FPf-0i-Efw">
+                                <rect key="frame" x="177" y="639" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="aOC-Wo-Bco" secondAttribute="trailing" constant="1" id="Cio-hw-utT"/>
+                            <constraint firstAttribute="trailing" secondItem="aOC-Wo-Bco" secondAttribute="trailing" id="Cio-hw-utT"/>
                             <constraint firstAttribute="trailing" secondItem="Duf-rK-hgn" secondAttribute="trailing" id="DZJ-uu-DN2"/>
-                            <constraint firstItem="DL3-Of-g0Y" firstAttribute="top" secondItem="aOC-Wo-Bco" secondAttribute="bottom" constant="1" id="JID-WA-JyF"/>
-                            <constraint firstItem="aOC-Wo-Bco" firstAttribute="top" secondItem="Duf-rK-hgn" secondAttribute="bottom" constant="1" id="PcC-LR-ba3"/>
-                            <constraint firstItem="aOC-Wo-Bco" firstAttribute="leading" secondItem="h2d-o2-SN3" secondAttribute="leading" constant="1" id="nOO-Fr-wxH"/>
+                            <constraint firstItem="DL3-Of-g0Y" firstAttribute="top" secondItem="aOC-Wo-Bco" secondAttribute="bottom" id="JID-WA-JyF"/>
+                            <constraint firstItem="aOC-Wo-Bco" firstAttribute="top" secondItem="Duf-rK-hgn" secondAttribute="bottom" id="PcC-LR-ba3"/>
+                            <constraint firstItem="aOC-Wo-Bco" firstAttribute="leading" secondItem="h2d-o2-SN3" secondAttribute="leading" id="nOO-Fr-wxH"/>
                             <constraint firstItem="Duf-rK-hgn" firstAttribute="leading" secondItem="h2d-o2-SN3" secondAttribute="leading" id="yVu-3z-Irv"/>
                             <constraint firstItem="Duf-rK-hgn" firstAttribute="top" secondItem="h2d-o2-SN3" secondAttribute="top" constant="37" id="yzO-jk-JbT"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="MapPinView" destination="Duf-rK-hgn" id="oPN-4n-8Gf"/>
+                        <outlet property="newCollectionLoadingIndicator" destination="FPf-0i-Efw" id="1xv-2p-Wde"/>
                         <outlet property="photosCollectionView" destination="aOC-Wo-Bco" id="rVu-H7-sH5"/>
                     </connections>
                 </viewController>

@@ -50,9 +50,7 @@ class PhotosViewController: UITableViewController {
         let url = URL(string: photo.photoURL!)
         let data = try? Data(contentsOf: url!)
         cell.imageView?.image = UIImage(data: data!)
-        
-        print("pinPhotos: \(pinPhots[indexPath[1]])")
-        
+                
         return cell
         
         //cell.textLabel?.text = "\(selectedPin.latitude) | \(selectedPin.longitude)"
