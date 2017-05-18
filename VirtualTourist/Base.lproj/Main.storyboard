@@ -75,7 +75,6 @@
                         <outlet property="mapView" destination="84d-UX-sVK" id="4ZA-Ym-dZO"/>
                         <outlet property="pinGestureRecognizer" destination="jup-nr-RWz" id="A1N-QY-YZe"/>
                         <outlet property="tapToDeleteLabel" destination="ckR-oS-8oz" id="THD-tB-Q4V"/>
-                        <segue destination="2Y7-UZ-iuP" kind="show" identifier="ClickedPinSegue" id="LX2-kE-UkV"/>
                         <segue destination="Qx7-gC-rHT" kind="show" identifier="ClickedPinSegueToCell" id="Jbl-NN-bbU"/>
                     </connections>
                 </viewController>
@@ -88,69 +87,10 @@
             </objects>
             <point key="canvasLocation" x="848.79999999999995" y="123.68815592203899"/>
         </scene>
-        <!--Pins-->
-        <scene sceneID="lZk-Mo-Nx6">
-            <objects>
-                <tableViewController title="Pins" id="2Y7-UZ-iuP" customClass="PinViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="Xas-aJ-4Xq">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="PinCell" id="r9W-SE-fy8">
-                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="r9W-SE-fy8" id="t8W-OE-IQ1">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="2Y7-UZ-iuP" id="Abd-ox-ehg"/>
-                            <outlet property="delegate" destination="2Y7-UZ-iuP" id="382-zc-lZZ"/>
-                        </connections>
-                    </tableView>
-                    <connections>
-                        <segue destination="APk-cf-Chc" kind="show" identifier="displayNoteSegue" id="MVr-SR-v8Q"/>
-                    </connections>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="7Dl-xx-xXi" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1894" y="504"/>
-        </scene>
-        <!--Photos-->
-        <scene sceneID="Zeo-vw-daQ">
-            <objects>
-                <tableViewController title="Photos" id="APk-cf-Chc" customClass="PhotosViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="uBB-o1-Hb8">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="PhotoCell" id="VSH-Zy-gUb">
-                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VSH-Zy-gUb" id="cSS-pe-3g6">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="APk-cf-Chc" id="9Sz-qh-HCL"/>
-                            <outlet property="delegate" destination="APk-cf-Chc" id="Vd9-DS-T5K"/>
-                        </connections>
-                    </tableView>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="1LT-EW-p5h" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2662" y="503"/>
-        </scene>
-        <!--Pin Image Cell View Controller-->
+        <!--Photo Album View Controller-->
         <scene sceneID="LRJ-cu-qgL">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="Qx7-gC-rHT" customClass="PinImageCellViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="Qx7-gC-rHT" customClass="PhotoAlbumViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="FMS-l4-X0h"/>
                         <viewControllerLayoutGuide type="bottom" id="DL3-Of-g0Y"/>

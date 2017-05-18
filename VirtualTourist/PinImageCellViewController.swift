@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreData
 
-class PinImageCellViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     @IBOutlet weak var photosCollectionView: UICollectionView!
     @IBOutlet weak var MapPinView: MKMapView!
@@ -38,7 +38,7 @@ class PinImageCellViewController: UIViewController, UICollectionViewDelegate, UI
         request.sortDescriptors = [ NSSortDescriptor(key: "dateTaken", ascending: true) ]
         request.predicate = predicate
         
-        
+        newCollectionLoadingIndicator.startAnimating()
         DispatchQueue.main.async {
             FlickrClient.sharedInstance.getImagesForPin(self.pin!.latitude, self.pin!.longitude) { (downloadedPhotos, succes) in
                 
@@ -62,7 +62,11 @@ class PinImageCellViewController: UIViewController, UICollectionViewDelegate, UI
                     }
                     
                     
-                    do { try self.appDelegate.stack.saveContext(); DispatchQueue.main.async { self.photosCollectionView.reloadData() }
+                    do { try self.appDelegate.stack.saveContext(); DispatchQueue.main.async {
+                        self.newCollectionLoadingIndicator.stopAnimating()
+                        self.photosCollectionView.reloadData()
+                        }
+                        
                     } catch { print("An error occured trying to save core data, after updating the selected pins photos ") }
                     
                     

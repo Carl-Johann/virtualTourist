@@ -65,6 +65,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             editStatus = false
             tapToDeleteLabel.alpha = 0
             
+            do { try self.appDelegate.stack.saveContext()
+            } catch { print("An error occured trying to save core data") }
         }
         
         self.setEditing(!self.isEditing, animated: true)
@@ -113,7 +115,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "ClickedPinSegueToCell" {
-            let pinCellVC = segue.destination as! PinImageCellViewController
+            let pinCellVC = segue.destination as! PhotoAlbumViewController
             
             //
             let pinFromAnnotation = self.pinFromSelectedAnnotation()
@@ -257,8 +259,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let selectedPin = pinFromSelectedAnnotation()
         let context = appDelegate.stack.context
         
-        mapView.removeAnnotation(self.selectedAnnotation!)
         context.delete(selectedPin)
+        mapView.removeAnnotation(self.selectedAnnotation!)
+        
+        
     }
 
     
