@@ -201,37 +201,51 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     //
     func setupPin(_ latitude: Double, _ longitude: Double) -> Pin {
+        //DispatchQueue.main.async {
+            
+            let pin = Pin(context: self.appDelegate.stack.context)
+            
+            pin.latitude = latitude
+            pin.longitude = longitude
+            return pin
+        //}
         
-        let pin = Pin(context: self.appDelegate.stack.context)
-        
-        pin.latitude = latitude
-        pin.longitude = longitude
-        return pin
     }
     
     
     //
     func setupPinPhoto(_ photo:[String : AnyObject]) -> Photos {
         
-        let pinPhoto = Photos(context: self.appDelegate.stack.context)
+        let pinPhoto = Photo(context: self.appDelegate.stack.context)
         
         guard let dateTaken = photo["datetaken"] as? String else { print("ERROR: MapViewController. Couldn't find 'datetaken' in 'photos'"); return pinPhoto}
         guard let photoURL = photo["url_s"] as? String else { print("ERROR: MapViewController. Couldn't find 'url_s' in 'photos'"); return pinPhoto }
+        
+        //let data = UIImagePNGRepresentation(image) as NSData?
+        let image = imageFromURL(photoURL)
+        
+        let data = UIImagePNGRepresentation(image) as NSData?
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let date = dateFormatter.date(from: dateTaken)
         
         
-        pinPhoto.photoURL = photoURL
+        pinPhoto.photoURL = data
         pinPhoto.dateTaken = date! as NSDate
         
         return pinPhoto
     }
     
     
-    
-    
+    //
+    func imageFromURL(_ url: String) -> UIImage {
+        let url = URL(string: url)
+        let data = try? Data(contentsOf: url!)
+        let imageFromURL = UIImage(data: data!)
+        
+        return imageFromURL!
+    }
     
     
     
@@ -264,7 +278,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         
     }
-
+    
     
     
     
