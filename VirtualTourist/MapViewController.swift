@@ -119,7 +119,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             
             //
             let pinFromAnnotation = self.pinFromSelectedAnnotation()
-            guard let photosFromPin = pinFromAnnotation.photos as? Set<Photos> else { print("no photos found from 'pinFromAnnotation'"); return }
+            guard let photosFromPin = pinFromAnnotation.photos as? Set<Photo> else { print("no photos found from 'pinFromAnnotation'"); return }
             
             //
             pinCellVC.pin = pinFromAnnotation
@@ -203,27 +203,26 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     func setupPin(_ latitude: Double, _ longitude: Double) -> Pin {
         //DispatchQueue.main.async {
             
-            let pin = Pin(context: self.appDelegate.stack.context)
+        let pin = Pin(context: self.appDelegate.stack.context)
             
-            pin.latitude = latitude
-            pin.longitude = longitude
-            return pin
+        pin.latitude = latitude
+        pin.longitude = longitude
+        
+        return pin
         //}
         
     }
     
     
     //
-    func setupPinPhoto(_ photo:[String : AnyObject]) -> Photos {
+    func setupPinPhoto(_ photo:[String : AnyObject]) -> Photo {
         
         let pinPhoto = Photo(context: self.appDelegate.stack.context)
         
         guard let dateTaken = photo["datetaken"] as? String else { print("ERROR: MapViewController. Couldn't find 'datetaken' in 'photos'"); return pinPhoto}
         guard let photoURL = photo["url_s"] as? String else { print("ERROR: MapViewController. Couldn't find 'url_s' in 'photos'"); return pinPhoto }
         
-        //let data = UIImagePNGRepresentation(image) as NSData?
         let image = imageFromURL(photoURL)
-        
         let data = UIImagePNGRepresentation(image) as NSData?
         
         let dateFormatter = DateFormatter()
@@ -231,7 +230,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let date = dateFormatter.date(from: dateTaken)
         
         
-        pinPhoto.photoURL = data
+        pinPhoto.image = data
         pinPhoto.dateTaken = date! as NSDate
         
         return pinPhoto
@@ -278,8 +277,5 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         
     }
-    
-    
-    
     
 }

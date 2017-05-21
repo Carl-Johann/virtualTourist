@@ -13,52 +13,17 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
-    let stack = CoreDataStack.init(modelName: "VirtualTourist")!
+    let stack = CoreDataStack.init(modelName: "Model")!
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        
-        /*print("Made pins and photos")
-        let pinOne = Pin(context: stack.context)
-        pinOne.latitude = 1.0
-        pinOne.longitude = 2.0
-        
-        let pinTwo = Pin(context: stack.context)
-        pinTwo.latitude = 3.0
-        pinTwo.longitude = 4.0
-        
-        let pictureOne = Photos(context: stack.context)
-        pictureOne.photoURL = "https://farm6.staticflickr.com/5779/22774140320_0d788d7c2a_m.jpg"
-        
-        let pictureTwo = Photos(context: stack.context)
-        pictureTwo.photoURL = "https://farm6.staticflickr.com/5581/14417246081_ea6fea8da5_m.jpg"
-        
-        let pictureThree = Photos(context: stack.context)
-        pictureThree.photoURL = "https://farm6.staticflickr.com/5779/22774140320_0d788d7c2a_m.jpg"
-        
-        let pictureFour = Photos(context: stack.context)
-        pictureFour.photoURL = "https://farm6.staticflickr.com/5581/14417246081_ea6fea8da5_m.jpg"
-
-        
-        pinOne.addToPhotos(pictureOne)
-        pinOne.addToPhotos(pictureThree)
-        
-        pinTwo.addToPhotos(pictureTwo)
-        pinTwo.addToPhotos(pictureFour)
-        
-        print(pinOne)
-        print("----------")
-        print(pinTwo)
-        print("----------")
-        */
-        
-        
-        return true
+                return true
     }
     
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+       
         do {
             try stack.saveContext()
         } catch {
@@ -95,7 +60,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } catch {
             print("Error while saving")
         }
-        
     }
     
 }

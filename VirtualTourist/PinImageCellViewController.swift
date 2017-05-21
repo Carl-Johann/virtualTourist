@@ -12,18 +12,22 @@ import CoreData
 
 class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
+    // MARK: - IBOutlets
     @IBOutlet weak var photosCollectionView: UICollectionView!
     @IBOutlet weak var MapPinView: MKMapView!
-    @IBOutlet weak var newCollectionLoadingIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var newCollectionButton: UIButton!
+    @IBOutlet weak var deleteSelectedButton: UIButton!
     
-    var photosFromPin: Set<Photos>?
+    // MARK: - Class Variables and Constants
+    var photosFromPin: Set<Photo>?
+    var selectedCells = [PhotoCell]()
     var pin: Pin?
     
     var photoURLS: [String]?
     var photosDateTaken: [String]?
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
-    
+    // MARK: - View override functions
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -31,14 +35,14 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         setupCollectionView()
     }
     
-    
+    // MARK: - IBActions
     @IBAction func newCollectionButtonAction(_ sender: Any) {
-        let request:NSFetchRequest<Photos> = Photos.fetchRequest()
+        let request:NSFetchRequest<Photo> = Photo.fetchRequest()
         let predicate = NSPredicate(format: "pin = %@", argumentArray: [pin!])
-        request.sortDescriptors = [ NSSortDescriptor(key: "dateTaken", ascending: true) ]
         request.predicate = predicate
+        request.sortDescriptors = [ NSSortDescriptor(key: "dateTaken", ascending: true) ]
         
-        newCollectionLoadingIndicator.startAnimating()
+        newCollectionButton.isEnabled = false
         DispatchQueue.main.async {
             FlickrClient.sharedInstance.getImagesForPin(self.pin!.latitude, self.pin!.longitude) { (downloadedPhotos, succes) in
                 
@@ -49,36 +53,91 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
                         let photoForIndex = downloadedPhotos[index]
                         
                         guard let dateTaken = photoForIndex["datetaken"] as? String else { print("ERROR: PinImageCellViewController. Couldn't find 'datetaken' in 'photos'")
-                            self.newCollectionLoadingIndicator.stopAnimating(); return }
+                            self.newCollectionButton.isEnabled = true; return }
                         
                         guard let photoURL = photoForIndex["url_s"] as? String else { print("ERROR: PinImageCellViewController. Couldn't find 'url_s' in 'photos'")
-                            self.newCollectionLoadingIndicator.stopAnimating(); return }
+                            self.newCollectionButton.isEnabled = true; return }
                         
                         let dateAsNSDate = self.dateFormatter(dateTaken)
                         
-                        photo.photoURL = photoURL
+                        let image = self.imageFromURL(photoURL)
+                        let data = UIImagePNGRepresentation(image) as NSData?
+                        
+                        photo.image = data
                         photo.dateTaken = dateAsNSDate
                         
                     }
                     
                     
-                    do { try self.appDelegate.stack.saveContext(); DispatchQueue.main.async {
-                        self.newCollectionLoadingIndicator.stopAnimating()
-                        self.photosCollectionView.reloadData()
-                        }
-                        
-                    } catch { print("An error occured trying to save core data, after updating the selected pins photos ") }
-                    
                     
                 } catch let err { print("error: \(err)") }
+                self.newCollectionButton.isEnabled = true
             }
         }
     }
     
+    @IBAction func deleteSelectedItemsButton(_ sender: Any) {
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Photo")
+        let itemIndexPaths = photosCollectionView.indexPathsForSelectedItems!
+        
+        var subpredicates = [NSPredicate]()
+        request.sortDescriptors = [ NSSortDescriptor(key: "dateTaken", ascending: true) ]
+        
+        
+        for indexPath in itemIndexPaths {
+            
+            let cell = photosCollectionView.cellForItem(at: indexPath) as! PhotoCell
+            let imageFromCell = cell.cellImage.image!
+            guard let imageAsData = UIImagePNGRepresentation(imageFromCell) as NSData? else { print("Couldn't convert image from photo to NSData"); return }
+            
+            
+            let predicate = NSPredicate(format: "image = %@", argumentArray: [imageAsData])
+            subpredicates.append(predicate)
+        }
+        
+        let orPredicate = NSCompoundPredicate(type: .or, subpredicates: subpredicates)
+        request.predicate = orPredicate
+        
+        
+        
+        
+        self.photosCollectionView.performBatchUpdates({
+            do { let searchResults = try self.appDelegate.stack.context.fetch(request)
+                
+                
+                for (index, photoFromSearchResults) in searchResults.enumerated() {
+                    let photo = photoFromSearchResults as! Photo
+                    
+                    self.pin?.removeFromPhotos(photo)
+                    self.photosCollectionView.deleteItems(at: [itemIndexPaths[index]])
+                }
+                
+                
+            } catch let err { print("error: \(err)") }
+        }) { (true) in
+            self.saveDeletedChangesAndSetButtons()
+        }
     
-    // MARK: - Methods
+        
+    }
     
     
+    
+    
+    // MARK: - Convenience Methods
+    
+    //
+    func saveDeletedChangesAndSetButtons() {
+        do { try self.appDelegate.stack.saveContext(); DispatchQueue.main.async {
+            self.deleteSelectedButton.alpha = 0
+            self.newCollectionButton.alpha = 1
+            self.photosCollectionView.reloadData()
+            
+            }
+        } catch { print("An error occured trying to save core data, after updating the selected pins photos ") }
+    }
+    
+    //
     func setupMapAnnotation() {
         
         let annotation = MKPointAnnotation()
@@ -87,8 +146,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         annotation.coordinate = coordinateFromPin
         self.MapPinView.addAnnotation(annotation)
     }
-    
-    
+
     //
     func dateFormatter(_ dateTaken: String) -> NSDate {
         
@@ -121,6 +179,8 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         let mkCoordination: MKCoordinateRegion = MKCoordinateRegion(center: mapCoordinate, span: coordinateSpan)
         MapPinView.setRegion(mkCoordination, animated: true)
         
+        photosCollectionView.allowsMultipleSelection = true
+        
         photosCollectionView.collectionViewLayout = layout
         photosCollectionView.reloadData()
     }
@@ -137,27 +197,32 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     
     
     // MARK: - CollectionView Methods
+    
+    //
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PinPhotoCell", for: indexPath) as! PhotoCell
         
         guard let photos = photosFromPin else { print("'photosFromPin = nil'"); return cell }
         let photosAsAnArray = Array(photos)
         
-        guard let photoURL = photosAsAnArray[indexPath[1]].photoURL else { print("photosAsAnArray[indexPath[1]].photoURL = nil"); return cell }
+        guard let image = photosAsAnArray[indexPath[1]].image else { print("photosAsAnArray[indexPath[1]].photoURL = nil"); return cell }
+        let imageFromPin = UIImage(data: image as Data)
         
-        cell.cellImage.image = imageFromURL(photoURL)
+        cell.cellImage.image = imageFromPin
         
         cell.cellLoadingIndicator.stopAnimating()
         return cell
     }
     
+    //
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         guard let photos = photosFromPin else { print("'photosFromPin = nil'"); return 0 }
         
-        return photos.count
+        return pin!.photos!.allObjects.count
     }
     
+    //
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         let CVWidth = collectionView.frame.width
@@ -168,6 +233,61 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         return CGSize(width: itemSize, height: itemSize)
         
     }
+    
+    //
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let selectedCell = collectionView.cellForItem(at: indexPath) as! PhotoCell
+        selectedCell.alpha = 0.5
+        self.checkAndUpdateView(selectedCell)
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        
+        let selectedCell = collectionView.cellForItem(at: indexPath) as! PhotoCell
+        selectedCell.alpha = 1
+        self.checkAndUpdateView(selectedCell)
+        
+    }
+    
+    // MARK: - CollectionView Methods
+    
+    func checkAndUpdateView(_ selectedCell: PhotoCell) {
+        
+        if photosCollectionView.indexPathsForSelectedItems?.count != 0 {
+            
+            newCollectionButton.alpha = 0
+            deleteSelectedButton.alpha = 1
+            
+        } else {
+            if photosCollectionView.indexPathsForSelectedItems?.count == 0 {
+                
+                newCollectionButton.alpha = 1
+                deleteSelectedButton.alpha = 0
+                
+            }
+        }
+        /*
+         //
+         if selectedCell.alpha == 1 {
+         
+         self.selectedCells.append(selectedCell)
+         selectedCell.alpha = 0.5
+         
+         } else {
+         if selectedCell.alpha == 0.5 {
+         
+         let index = self.selectedCells.index(of: selectedCell)
+         self.selectedCells.remove(at: index!)
+         selectedCell.alpha = 1
+         
+         }
+         }
+         
+         */
+    }
+    
     
 }
 

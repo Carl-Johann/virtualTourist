@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -100,17 +101,17 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" mapType="standard" zoomEnabled="NO" scrollEnabled="NO" rotateEnabled="NO" pitchEnabled="NO" showsBuildings="NO" showsCompass="NO" showsPointsOfInterest="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Duf-rK-hgn">
-                                <rect key="frame" x="0.0" y="37" width="375" height="182"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="182" id="x34-ry-UnU"/>
-                                </constraints>
+                                <rect key="frame" x="0.0" y="37" width="375" height="209"/>
                                 <connections>
                                     <outlet property="delegate" destination="Qx7-gC-rHT" id="Esx-QP-mFs"/>
                                 </connections>
                             </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="aOC-Wo-Bco">
-                                <rect key="frame" x="0.0" y="219" width="375" height="448"/>
+                                <rect key="frame" x="0.0" y="246" width="375" height="421"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="aOC-Wo-Bco" secondAttribute="height" multiplier="375:421" id="1ew-BW-daN"/>
+                                </constraints>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="FWs-9S-2L8">
                                     <size key="itemSize" width="100" height="100"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -128,9 +129,8 @@
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="z0b-Jc-WNS">
                                                     <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                                 </imageView>
-                                                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="wpA-gp-TSv">
+                                                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="wpA-gp-TSv">
                                                     <rect key="frame" x="40" y="40" width="20" height="20"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </activityIndicatorView>
                                             </subviews>
                                         </view>
@@ -138,6 +138,8 @@
                                             <constraint firstAttribute="bottom" secondItem="z0b-Jc-WNS" secondAttribute="bottom" id="5tv-Y4-eCy"/>
                                             <constraint firstItem="z0b-Jc-WNS" firstAttribute="leading" secondItem="OFV-0D-pAa" secondAttribute="leading" id="Bd4-7p-vVo"/>
                                             <constraint firstAttribute="trailing" secondItem="z0b-Jc-WNS" secondAttribute="trailing" id="coH-zd-ixG"/>
+                                            <constraint firstItem="wpA-gp-TSv" firstAttribute="centerX" secondItem="z0b-Jc-WNS" secondAttribute="centerX" id="h8W-kM-ciL"/>
+                                            <constraint firstItem="wpA-gp-TSv" firstAttribute="centerY" secondItem="z0b-Jc-WNS" secondAttribute="centerY" id="pOr-oM-LXY"/>
                                             <constraint firstItem="z0b-Jc-WNS" firstAttribute="top" secondItem="OFV-0D-pAa" secondAttribute="top" id="vke-CY-FVh"/>
                                         </constraints>
                                         <connections>
@@ -151,34 +153,51 @@
                                     <outlet property="delegate" destination="Qx7-gC-rHT" id="wY7-X7-3yJ"/>
                                 </connections>
                             </collectionView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Huf-V4-phV">
-                                <rect key="frame" x="0.0" y="632" width="375" height="35"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Huf-V4-phV">
+                                <rect key="frame" x="0.0" y="630" width="375" height="37.5"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="Huf-V4-phV" secondAttribute="height" multiplier="25:2.5" id="pCf-RQ-gwg"/>
+                                </constraints>
                                 <state key="normal" title="New Collection"/>
                                 <connections>
                                     <action selector="newCollectionButtonAction:" destination="Qx7-gC-rHT" eventType="touchUpInside" id="gfZ-9S-Yck"/>
                                 </connections>
                             </button>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="FPf-0i-Efw">
-                                <rect key="frame" x="177" y="639" width="20" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </activityIndicatorView>
+                            <button opaque="NO" alpha="0.0" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4tJ-oa-RNs">
+                                <rect key="frame" x="0.0" y="630" width="375" height="37.5"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="4tJ-oa-RNs" secondAttribute="height" multiplier="25:2.5" id="Hlh-Qw-8AL"/>
+                                </constraints>
+                                <state key="normal" title="Delete selected items"/>
+                                <connections>
+                                    <action selector="deleteSelectedItemsButton:" destination="Qx7-gC-rHT" eventType="touchUpInside" id="DpM-5q-pZK"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="aOC-Wo-Bco" secondAttribute="trailing" id="Cio-hw-utT"/>
+                            <constraint firstAttribute="bottom" secondItem="4tJ-oa-RNs" secondAttribute="bottom" id="28c-Jq-OdI"/>
+                            <constraint firstAttribute="trailing" secondItem="Huf-V4-phV" secondAttribute="trailing" id="2uv-h3-Ceb"/>
+                            <constraint firstItem="aOC-Wo-Bco" firstAttribute="top" secondItem="Duf-rK-hgn" secondAttribute="bottom" id="4UH-kd-BfF"/>
+                            <constraint firstAttribute="trailing" secondItem="aOC-Wo-Bco" secondAttribute="trailing" id="6HU-Hd-YCj"/>
+                            <constraint firstAttribute="bottom" secondItem="Huf-V4-phV" secondAttribute="bottom" id="DXp-lu-f0j"/>
                             <constraint firstAttribute="trailing" secondItem="Duf-rK-hgn" secondAttribute="trailing" id="DZJ-uu-DN2"/>
-                            <constraint firstItem="DL3-Of-g0Y" firstAttribute="top" secondItem="aOC-Wo-Bco" secondAttribute="bottom" id="JID-WA-JyF"/>
-                            <constraint firstItem="aOC-Wo-Bco" firstAttribute="top" secondItem="Duf-rK-hgn" secondAttribute="bottom" id="PcC-LR-ba3"/>
-                            <constraint firstItem="aOC-Wo-Bco" firstAttribute="leading" secondItem="h2d-o2-SN3" secondAttribute="leading" id="nOO-Fr-wxH"/>
+                            <constraint firstAttribute="bottom" secondItem="aOC-Wo-Bco" secondAttribute="bottom" id="En7-1P-FKH"/>
+                            <constraint firstAttribute="trailing" secondItem="Huf-V4-phV" secondAttribute="trailing" id="Hps-D0-C2x"/>
+                            <constraint firstItem="Huf-V4-phV" firstAttribute="leading" secondItem="h2d-o2-SN3" secondAttribute="leading" id="RKM-Np-0cV"/>
+                            <constraint firstItem="4tJ-oa-RNs" firstAttribute="leading" secondItem="h2d-o2-SN3" secondAttribute="leading" id="i7j-BP-IOf"/>
+                            <constraint firstItem="aOC-Wo-Bco" firstAttribute="leading" secondItem="h2d-o2-SN3" secondAttribute="leading" id="sXw-Es-g2p"/>
+                            <constraint firstAttribute="trailing" secondItem="4tJ-oa-RNs" secondAttribute="trailing" id="urY-zL-TLh"/>
                             <constraint firstItem="Duf-rK-hgn" firstAttribute="leading" secondItem="h2d-o2-SN3" secondAttribute="leading" id="yVu-3z-Irv"/>
                             <constraint firstItem="Duf-rK-hgn" firstAttribute="top" secondItem="h2d-o2-SN3" secondAttribute="top" constant="37" id="yzO-jk-JbT"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="MapPinView" destination="Duf-rK-hgn" id="oPN-4n-8Gf"/>
-                        <outlet property="newCollectionLoadingIndicator" destination="FPf-0i-Efw" id="1xv-2p-Wde"/>
+                        <outlet property="deleteSelectedButton" destination="4tJ-oa-RNs" id="t7W-qJ-fJg"/>
+                        <outlet property="newCollectionButton" destination="Huf-V4-phV" id="VOZ-lt-BFq"/>
                         <outlet property="photosCollectionView" destination="aOC-Wo-Bco" id="rVu-H7-sH5"/>
                     </connections>
                 </viewController>

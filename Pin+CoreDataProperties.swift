@@ -26,10 +26,10 @@ extension Pin {
 extension Pin {
 
     @objc(addPhotosObject:)
-    @NSManaged public func addToPhotos(_ value: Photos)
+    @NSManaged public func addToPhotos(_ value: Photo)
 
     @objc(removePhotosObject:)
-    @NSManaged public func removeFromPhotos(_ value: Photos)
+    @NSManaged public func removeFromPhotos(_ value: Photo)
 
     @objc(addPhotos:)
     @NSManaged public func addToPhotos(_ values: NSSet)
