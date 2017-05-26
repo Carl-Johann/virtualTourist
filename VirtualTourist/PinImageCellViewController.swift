@@ -37,18 +37,19 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     
     // MARK: - IBActions
     @IBAction func newCollectionButtonAction(_ sender: Any) {
+        
         let request:NSFetchRequest<Photo> = Photo.fetchRequest()
         let predicate = NSPredicate(format: "pin = %@", argumentArray: [pin!])
         request.predicate = predicate
         request.sortDescriptors = [ NSSortDescriptor(key: "dateTaken", ascending: true) ]
         
-        newCollectionButton.isEnabled = false
+        
         DispatchQueue.main.async {
             FlickrClient.sharedInstance.getImagesForPin(self.pin!.latitude, self.pin!.longitude) { (downloadedPhotos, succes) in
-                
                 do {
                     let searchResults = try self.appDelegate.stack.context.fetch(request)
-                    
+                    print(2, searchResults.count)
+                    print(4, searchResults)
                     for (index, photo) in searchResults.enumerated() {
                         let photoForIndex = downloadedPhotos[index]
                         
@@ -66,12 +67,18 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
                         photo.image = data
                         photo.dateTaken = dateAsNSDate
                         
+                        print("-------------------")
+                        print(photo)
+                        
+                        
                     }
                     
                     
                     
                 } catch let err { print("error: \(err)") }
-                self.newCollectionButton.isEnabled = true
+                
+                print(100, self.pin!.photos!.count)
+                
             }
         }
     }
@@ -79,10 +86,8 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     @IBAction func deleteSelectedItemsButton(_ sender: Any) {
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Photo")
         let itemIndexPaths = photosCollectionView.indexPathsForSelectedItems!
-        
         var subpredicates = [NSPredicate]()
         request.sortDescriptors = [ NSSortDescriptor(key: "dateTaken", ascending: true) ]
-        
         
         for indexPath in itemIndexPaths {
             
@@ -94,32 +99,88 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
             let predicate = NSPredicate(format: "image = %@", argumentArray: [imageAsData])
             subpredicates.append(predicate)
         }
+        let predicates = NSCompoundPredicate(type: .or, subpredicates: subpredicates)
+        request.predicate = predicates
+        //let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: request)
         
-        let orPredicate = NSCompoundPredicate(type: .or, subpredicates: subpredicates)
-        request.predicate = orPredicate
+        let lortt = NSSet(array: try! self.appDelegate.stack.context.fetch(request) )
         
         
-        
+        /*print("-----------------")
+         print(lortt!.count)
+         print(itemIndexPaths.count)
+         
+         
+         for photo in lortt! {
+         print("-----------------------------------------------------------")
+         print(photo)
+         
+         }*/
         
         self.photosCollectionView.performBatchUpdates({
-            do { let searchResults = try self.appDelegate.stack.context.fetch(request)
-                
-                
-                for (index, photoFromSearchResults) in searchResults.enumerated() {
-                    let photo = photoFromSearchResults as! Photo
-                    
-                    self.pin?.removeFromPhotos(photo)
-                    self.photosCollectionView.deleteItems(at: [itemIndexPaths[index]])
-                }
-                
-                
-            } catch let err { print("error: \(err)") }
+            
+            self.photosCollectionView.deleteItems(at: itemIndexPaths)
+            self.pin?.removeFromPhotos(lortt)
+            
         }) { (true) in
+            print(123)
             self.saveDeletedChangesAndSetButtons()
         }
-    
         
     }
+    /*
+     
+     self.photosCollectionView.performBatchUpdates({
+     
+     do { let fetchRequestResults = try self.appDelegate.stack.context.fetch(request) as! [Photo]
+     
+     
+     print("Photos Length1: \(self.pin!.photos!.count)")
+     for (index, _) in fetchRequestResults.enumerated() {
+     
+     self.photosCollectionView.deleteItems(at: [itemIndexPaths[index]])
+     self.appDelegate.stack.context.delete(fetchRequestResults[index])
+     
+     }
+     } catch let err { print("error: \(err)") }
+     
+     
+     
+     
+     
+     
+     
+     }) { (true) in
+     
+     self.saveDeletedChangesAndSetButtons()
+     
+     }
+     }*/
+    /* self.photosCollectionView.performBatchUpdates({
+     do { let searchResults = try self.appDelegate.stack.context.fetch(request)
+     
+     
+     self.photosCollectionView.deleteItems(at: itemIndexPaths)
+     
+     
+     
+     for (index, photoFromSearchResults) in searchResults.enumerated() {
+     
+     let photo = photoFromSearchResults as! Photo
+     self.pin?.removeFromPhotos(photo)
+     
+     }
+     
+     
+     
+     } catch let err { print("error: \(err)") }
+     }) { (false) in
+     print(11)
+     self.saveDeletedChangesAndSetButtons()
+     }
+     */
+    
+    
     
     
     
@@ -129,9 +190,11 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     //
     func saveDeletedChangesAndSetButtons() {
         do { try self.appDelegate.stack.saveContext(); DispatchQueue.main.async {
+            print("Photos Length: \(self.pin!.photos!.count)")
             self.deleteSelectedButton.alpha = 0
             self.newCollectionButton.alpha = 1
-            self.photosCollectionView.reloadData()
+            
+            //self.photosCollectionView.reloadData()
             
             }
         } catch { print("An error occured trying to save core data, after updating the selected pins photos ") }
@@ -146,7 +209,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         annotation.coordinate = coordinateFromPin
         self.MapPinView.addAnnotation(annotation)
     }
-
+    
     //
     func dateFormatter(_ dateTaken: String) -> NSDate {
         

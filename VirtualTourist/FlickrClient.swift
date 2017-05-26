@@ -14,7 +14,7 @@ struct FlickrClient {
     let session = URLSession.shared
     //let photos = [String]
     
-    func getImagesForPin(_ Latitude: Double, _ Longitude: Double, CHForImagesForPin: @escaping (_ data: [[String:AnyObject]],_ succes: Bool) -> Void) {
+    func getImagesForPin(_ Latitude: Double,_ Longitude: Double,_ numberOfPicturesToDownload: Int = 25, CHForImagesForPin: @escaping (_ data: [[String:AnyObject]],_ succes: Bool) -> Void) {
         
         let parameters = [
             FlickrParameterKeys.Method:FlickrMethods.photosSearch,
@@ -25,7 +25,7 @@ struct FlickrClient {
             FlickrParameterKeys.Format:FlickrParameterValues.JSONResponseFormat,
             FlickrParameterKeys.NoJSONCallBack:FlickrParameterValues.DisableJSONCallback,
             FlickrParameterKeys.Extras:FlickrParameterValues.DateTakenAndUrlSmall,
-            FlickrParameterKeys.PerPage:FlickrParameterValues.NumberOfPhotosPerPage
+            FlickrParameterKeys.PerPage:numberOfPicturesToDownload
         ] as [String : AnyObject]
         
         
@@ -42,13 +42,11 @@ struct FlickrClient {
                 CHForImagesForPin([[:]], false)
                 return
             }
-            
             guard let photos = results["photo"] as? [[String:AnyObject]] else {
                 print("ERROR: FlickrClient. Couldn't find 'photo' in 'results'")
                 CHForImagesForPin([[:]], false)
                 return
             }
-
             CHForImagesForPin(photos, true)
         }
         task.resume()
