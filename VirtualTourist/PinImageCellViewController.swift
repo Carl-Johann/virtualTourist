@@ -23,9 +23,8 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     var selectedCells = [PhotoCell]()
     var pin: Pin?
     
-    var photoURLS: [String]?
-    var photosDateTaken: [String]?
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    
     
     // MARK: - View override functions
     override func viewDidLoad() {
@@ -64,6 +63,8 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
                         let image = self.imageFromURL(photoURL)
                         let data = UIImagePNGRepresentation(image) as NSData?
                         
+                        
+                        
                         photo.image = data
                         photo.dateTaken = dateAsNSDate
                         
@@ -84,43 +85,41 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     }
     
     @IBAction func deleteSelectedItemsButton(_ sender: Any) {
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Photo")
         let itemIndexPaths = photosCollectionView.indexPathsForSelectedItems!
         var subpredicates = [NSPredicate]()
+        
+        
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Photo")
         request.sortDescriptors = [ NSSortDescriptor(key: "dateTaken", ascending: true) ]
+
         
         for indexPath in itemIndexPaths {
             
             let cell = photosCollectionView.cellForItem(at: indexPath) as! PhotoCell
             let imageFromCell = cell.cellImage.image!
-            guard let imageAsData = UIImagePNGRepresentation(imageFromCell) as NSData? else { print("Couldn't convert image from photo to NSData"); return }
+            
+            guard let imageAsData = UIImagePNGRepresentation(imageFromCell) as NSData? else {
+                print("Couldn't convert image from photo to NSData")
+                return
+            }
             
             
             let predicate = NSPredicate(format: "image = %@", argumentArray: [imageAsData])
             subpredicates.append(predicate)
         }
+        
+        
+    
         let predicates = NSCompoundPredicate(type: .or, subpredicates: subpredicates)
         request.predicate = predicates
-        //let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: request)
-        
-        let lortt = NSSet(array: try! self.appDelegate.stack.context.fetch(request) )
+        let selectedPhotos = NSSet(array: try! self.appDelegate.stack.context.fetch(request) )
         
         
-        /*print("-----------------")
-         print(lortt!.count)
-         print(itemIndexPaths.count)
-         
-         
-         for photo in lortt! {
-         print("-----------------------------------------------------------")
-         print(photo)
-         
-         }*/
         
         self.photosCollectionView.performBatchUpdates({
             
             self.photosCollectionView.deleteItems(at: itemIndexPaths)
-            self.pin?.removeFromPhotos(lortt)
+            self.pin?.removeFromPhotos(selectedPhotos)
             
         }) { (true) in
             print(123)
@@ -128,57 +127,6 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         }
         
     }
-    /*
-     
-     self.photosCollectionView.performBatchUpdates({
-     
-     do { let fetchRequestResults = try self.appDelegate.stack.context.fetch(request) as! [Photo]
-     
-     
-     print("Photos Length1: \(self.pin!.photos!.count)")
-     for (index, _) in fetchRequestResults.enumerated() {
-     
-     self.photosCollectionView.deleteItems(at: [itemIndexPaths[index]])
-     self.appDelegate.stack.context.delete(fetchRequestResults[index])
-     
-     }
-     } catch let err { print("error: \(err)") }
-     
-     
-     
-     
-     
-     
-     
-     }) { (true) in
-     
-     self.saveDeletedChangesAndSetButtons()
-     
-     }
-     }*/
-    /* self.photosCollectionView.performBatchUpdates({
-     do { let searchResults = try self.appDelegate.stack.context.fetch(request)
-     
-     
-     self.photosCollectionView.deleteItems(at: itemIndexPaths)
-     
-     
-     
-     for (index, photoFromSearchResults) in searchResults.enumerated() {
-     
-     let photo = photoFromSearchResults as! Photo
-     self.pin?.removeFromPhotos(photo)
-     
-     }
-     
-     
-     
-     } catch let err { print("error: \(err)") }
-     }) { (false) in
-     print(11)
-     self.saveDeletedChangesAndSetButtons()
-     }
-     */
     
     
     
@@ -282,7 +230,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         
         guard let photos = photosFromPin else { print("'photosFromPin = nil'"); return 0 }
         
-        return pin!.photos!.allObjects.count
+        return photos.count
     }
     
     //
@@ -331,24 +279,6 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
                 
             }
         }
-        /*
-         //
-         if selectedCell.alpha == 1 {
-         
-         self.selectedCells.append(selectedCell)
-         selectedCell.alpha = 0.5
-         
-         } else {
-         if selectedCell.alpha == 0.5 {
-         
-         let index = self.selectedCells.index(of: selectedCell)
-         self.selectedCells.remove(at: index!)
-         selectedCell.alpha = 1
-         
-         }
-         }
-         
-         */
     }
     
     
